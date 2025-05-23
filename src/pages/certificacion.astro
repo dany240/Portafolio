@@ -1,0 +1,95 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import { getImage, Image } from 'astro:assets';
+import ImagePersonalizada from "./image_personalizada.astro";
+
+const proyects = await getCollection("certificaciones");
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/tecnologys/*.{svg}');
+
+const af = [...proyects]  
+function ShowDialog(url_certificado :string){
+      (document.getElementById("pdf_viwer") as HTMLEmbedElement).src =url_certificado
+      document.getElementById("default-modal")!.setAttribute("disable","false")
+
+   }
+   function CloseDialog(){
+      document.getElementById("default-modal")!.setAttribute("disable","false")
+  
+   }
+---
+ 
+<Layout>
+  
+ 
+  <main class="  block w-full mx-auto">
+
+   <section>
+      <div id="default-modal" tabindex="-1" aria-hidden="true" 
+class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+        
+            <!-- Modal body -->
+            <div class="p-4 md:p-5 space-y-4">
+               <embed id="pdf_viwer" src="" type="pdf">
+            </div>
+           
+           
+        </div>
+    </div>
+</div>
+   </section>
+   <section class="px-4 mx-auto   ">
+      <h1 class="text-black font-bold   align-text-bottom bg-amber-500 text-center  text-6xl">Certificaciones</h1>
+   </section>
+   <section class="px-4 mx-auto  ">
+      <div class="grid md:grid-cols-2 gap-4">
+         {
+            
+             af.map((e) => {
+
+               const { Nombre,    Icon, Url, Certificado_id ,Tecnologias} = e.data;
+               const descripcion =e.body
+  
+               
+               return (
+                  <div class="gap-4 px-4" onclick={"(l)=>{ShowDialog(\'"+String(Certificado_id)+"\' )}" }>
+                     <div class="   rounded overflow-hidden shadow-lg hover:shadow-lime-800">
+ 		             <ImagePersonalizada imagePath={  "/images/tecnologys/go.svg" } 
+                           classname="w-30 h-30"  
+                           altText={Icon}
+                        />
+                        <div class="px-6 py-4">
+                           <div class="font-bold text-xl mb-2">
+                               {Nombre}
+                           </div>
+                           <p class="text-gray-700 text-base">
+                               {descripcion}
+                           </p>
+                        </div>
+                        <div class="px-6 py-4">
+                           <a class="text-blue-700 text-base font-light" target="_blank"  href={Url}>
+                                Certificado
+                           </a>
+                        </div>
+                        <div class="px-6 pt-4 pb-2">
+                          {
+                           Tecnologias.map(k=>{
+                              <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                              #{k}
+                           </span>
+                           })
+                          }
+                        </div>
+                     </div>
+                  </div>
+               );
+            })
+         }
+   </section>
+   
+
+  </main>
+</Layout>

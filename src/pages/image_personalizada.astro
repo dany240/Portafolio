@@ -1,0 +1,28 @@
+
+
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+   imagePath: string;
+   altText: string;
+   classname :string
+ }
+console.log("images---->")
+
+
+const { imagePath, altText ,classname } = Astro.props;
+const home= '/src/assets'
+const folder = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/*/**.{webp,svg}');
+console.log("images-fin<--->")
+console.log(home+imagePath)
+
+if (!folder[home+imagePath]) {
+console.log(folder);
+throw new Error(`"${home+imagePath}" does not exist in glob:  "${home}"`)};
+
+console.log(folder)
+---
+<Image  src={folder[home+imagePath]()} alt={altText} class={classname}
+/>
